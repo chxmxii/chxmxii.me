@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>K8s on chxmxii</title>
+    <link>//localhost:1313/k8s/</link>
+    <description>Recent content in K8s on chxmxii</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>chamsii.mouhib@gmail.com (MOUHIB CHVMSI)</managingEditor>
+    <webMaster>chamsii.mouhib@gmail.com (MOUHIB CHVMSI)</webMaster>
+    <copyright>© 2024 MOUHIB CHVMSI</copyright>
+    <lastBuildDate>Thu, 05 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/k8s/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>CKA</title>
+      <link>//localhost:1313/k8s/1733432937607-cka/</link>
+      <pubDate>Thu, 05 Dec 2024 00:00:00 +0000</pubDate>
+      <author>chamsii.mouhib@gmail.com (MOUHIB CHVMSI)</author>
+      <guid>//localhost:1313/k8s/1733432937607-cka/</guid>
+      <description></description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="//localhost:1313/k8s/1733432937607-cka/featured.png" />
+    </item>
+    
+  </channel>
+</rss>
