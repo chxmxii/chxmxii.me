@@ -2,17 +2,17 @@ disabled = false
 languageCode = "en"
 languageName = "English"
 weight = 1
-title = "$HOME"
+title = "chxmxii_"
 
 [params]
   displayName = "EN"
   isoCode = "en"
   rtl = false
   dateFormat = "2 January 2006"
-  #logo = "img/mor1.jpg"
-  #secondaryLogo = "img/mor.jpg"
+  logo = "img/logo.png"
+  #secondaryLogo = "img/logo.png"
   description = "a wealth of information"
-  copyright = "© All right reserved chxmxii - 2024"
+  copyright = "©️ 2024 chxmxii All Rights Reserved"
 
 [params.author]
     name = "MOUHIB CHVMSI"
@@ -44,7 +44,7 @@ title = "$HOME"
 #     { keybase = "https://keybase.io/username" },
 #     { kickstarter = "https://www.kickstarter.com/profile/username" },
 #     { lastfm = "https://lastfm.com/user/username" },
-#     { linkedin = "https://linkedin.com/in/username" },
+     { linkedin = "https://linkedin.com/in/mouhib-chm" },
 #     { mastodon = "https://mastodon.instance/@username" },
 #     { medium = "https://medium.com/username" },
 #     { microsoft = "https://www.microsoft.com/" },

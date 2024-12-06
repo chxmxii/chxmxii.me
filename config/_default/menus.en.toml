@@ -90,3 +90,9 @@
    name = "Tags"
    pageRef = "tags"
    weight = 10
+
+[[footer]]
+   name = "Github"
+   pre = "github"
+   url = "https://github.com/chxmxii"
+   weight = 5
