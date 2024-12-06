@@ -3,32 +3,74 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>//localhost:1313/blogs/</loc>
-    <lastmod>2024-12-05T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>//localhost:1313/certs/</loc>
-    <lastmod>2024-12-05T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>//localhost:1313/</loc>
-    <lastmod>2024-12-05T00:00:00+00:00</lastmod>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>//localhost:1313/certs/k8s/</loc>
-    <lastmod>2024-12-05T00:00:00+00:00</lastmod>
+    <loc>//localhost:1313/aws/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>//localhost:1313/blogs/1733432699463-welcome-to-my-new-site/</loc>
-    <lastmod>2024-12-05T00:00:00+00:00</lastmod>
+    <loc>//localhost:1313/aws/1733494290404-aws-ccp/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/blogs/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/kubernetes/1733494473362-certified-kubernetes-administrator/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/kubernetes/1733494487944-certified-kubernetes-security-specialist/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/kubernetes/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/blogs/1733494554889-new-blog-site/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/redhat/1733494376968-red-hat-certified-engineer/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/redhat/1733494361682-red-hat-certified-specialist-in-containers/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/redhat/1733494397412-red-hat-certified-system-adminstrator/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>//localhost:1313/redhat/</loc>
+    <lastmod>2024-12-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>

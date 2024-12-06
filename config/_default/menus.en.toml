@@ -11,9 +11,18 @@
 # ordered by weight from lowest to highest.
 
 [[main]]
-    name = "Blogs"
+    name = "blogs"
     pageRef = "blogs"
-    weight = 10
+    weight = 1
+    
+[[main]]
+    name = "writeups"
+    pageRef = "writeups"
+    weight = 9
+   
+[[main]]
+    name = "certs"
+    weight = 8
     
 
 #[[main]]
@@ -22,27 +31,27 @@
 
 [[main]]
    name = "Redhat"
-   parent = "Certs"
-   pageRef = "certs/rh"
+   parent = "certs"
+   pageRef = "redhat"
    weight = 204
 
 [[main]]
-   name = "Kubernetes"
-   parent = "Certs"
-   pageRef = "certs/k8s"
+   name = "K8S"
+   parent = "certs"
+   pageRef = "kubernetes"
    weight = 20
 
 [[main]]
    name = "AWS"
-   parent = "Certs"
-   pageRef = "certs/aws"
+   parent = "certs"
+   pageRef = "aws"
    weight = 20
 
-[[main]]
-   name = "Security"
-   parent = "Certs"
-   pageRef = "certs/security"
-   weight = 20
+#[[main]]
+#   name = "Security"
+#   parent = "Certs"
+#   pageRef = "certs/security"
+#   weight = 20
 
 #[[main]]
 #  name = "example sub-menu 2"
@@ -77,12 +86,7 @@
 # the copyright notice. Configure as per the main menu above.
 
 
-# [[footer]]
-#   name = "Tags"
-#   pageRef = "tags"
-#   weight = 10
-
 [[footer]]
-    name = "certs"
-    pageRef = "certs"
-    weight = 20
+   name = "Tags"
+   pageRef = "tags"
+   weight = 10
