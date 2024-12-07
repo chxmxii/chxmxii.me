@@ -10,14 +10,14 @@ title = "chxmxii_"
   rtl = false
   dateFormat = "2 January 2006"
   logo = "img/logo.png"
-  #secondaryLogo = "img/logo.png"
+  secondaryLogo = "img/mor.jpg"
   description = "a wealth of information"
   copyright = "©️ 2024 chxmxii All Rights Reserved"
 
 [params.author]
     name = "MOUHIB CHVMSI"
     email = "chamsii.mouhib@gmail.com"
-    image = "img/mor.jpg"
+    image = "img/lost.gif"
     imageQuality = 96
     headline = "love to do engineering things!"
     bio = "automation && container guy"
