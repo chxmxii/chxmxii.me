@@ -2,7 +2,7 @@
 title: "KKE - All git tasks"
 date: 2022-10-15
 draft: false
-description: "a description"
+description: "Writeups for all git challenges from the kodekloud platform"
 tags: ["linux", "git"]
 ---
 
