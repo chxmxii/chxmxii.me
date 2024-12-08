@@ -2,8 +2,8 @@
 title: "KEE - All Kubernetes tasks "
 date: 2023-06-11
 draft: false
-description: "a description"
-tags: ["example", "tag"]
+description: "Writeups for all kubernetes challenges from the kodekloud platform"
+tags: ["Kubernetes", "Devops"]
 ---
 
 KodeKloud Engineer is a platform for students to gain real hands-on experience with DevOps skills.
