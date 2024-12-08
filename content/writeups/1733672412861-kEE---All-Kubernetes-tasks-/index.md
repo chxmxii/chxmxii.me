@@ -1,6 +1,6 @@
 ---
 title: "KEE - All Kubernetes tasks "
-date: 2023-06-11
+date: 2023-11-11
 draft: false
 description: "Writeups for all kubernetes challenges from the kodekloud platform"
 tags: ["Kubernetes", "Devops"]

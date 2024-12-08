@@ -1,6 +1,6 @@
 ---
 title: "KKE - All Linux tasks"
-date: 2023-10-08
+date: 2022-11-08
 draft: false
 description: "Writeups for all linux challenges from the kodekloud platform"
 tags: ["Linux", "DevOps"]

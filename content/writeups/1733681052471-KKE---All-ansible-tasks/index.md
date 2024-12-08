@@ -1,6 +1,6 @@
 ---
 title: "KKE - All ansible tasks"
-date: 2023-12-20
+date: 2022-12-20
 draft: false
 description: "Writeups for all ansible challenges from the kodekloud platform"
 tags: ["Ansible", "DevOps"]

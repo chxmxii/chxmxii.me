@@ -1,6 +1,6 @@
 ---
 title: "KKE - All Docker tasks"
-date: 2024-12-08
+date: 2023-10-08
 draft: false
 description: "Writeups for all docker challenges from the kodekloud platform"
 tags: ["Docker", "DevOps"]

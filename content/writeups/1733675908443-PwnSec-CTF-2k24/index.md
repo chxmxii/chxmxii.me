@@ -1,15 +1,20 @@
 ---
 title: "PwnSec-CTF 2k24"
-date: 2024-12-08
+date: 2024-11-17
 draft: false
-description: "a description"
+description: "writeup for kloud10 chall"
 tags: ["ctf", "security"]
 ---
+
+{{< button href="https://ctf.pwnsec.xyz/" target="_self" >}}
+Click here to vist PwnSec 2k24{{< /button >}}
+
 
 ### Info;
   - Writers: CodeBreaker44 & chxmxii
   - Difficulty: Hard
   - Category: Forensics
+  - Solvers: 0
   - Description: Be Wary Of Shortcuts To Knowledge
   - Skills required:
     1. Cloud 
