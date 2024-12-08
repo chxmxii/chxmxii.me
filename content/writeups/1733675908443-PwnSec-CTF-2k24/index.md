@@ -6,26 +6,21 @@ description: "a description"
 tags: ["ctf", "security"]
 ---
 
-## Cloud 10
-
-### Writers: CodeBreaker44 & chxmxii
-
-### Difficulty: Hard
-
-### Category: Forensics
-
-### Description: Be Wary Of Shortcuts To Knowledge
-
-### Skills required:
-
-1. Cloud 
-2. k8s
-3. helm chart
-4. aws pentesting
+### Info;
+  - Writers: CodeBreaker44 & chxmxii
+  - Difficulty: Hard
+  - Category: Forensics
+  - Description: Be Wary Of Shortcuts To Knowledge
+  - Skills required:
+    1. Cloud 
+    2. k8s
+    3. helm chart
+    4. aws pentesting
 
 
 ### Solution:
 
+#### Part I: Getting the AWS Creds from ETCD;
 you are first given a `zip` file called `kloud-10` after unzipping the file you will find a file called `db` this file is an etcd backup file in order to deal with it you need to have etcd install in order to deal with it:
 
 first you need to run the following:
@@ -38,7 +33,7 @@ This command retrieves all key-value pairs stored in etcd that start with /. The
 
 ![etcdctl output](image.png)
 
-
+#### Part II: Enumerating the AWS account;
 we notice a list of keys with a wide range of options and values, if we go through them will notice one with the name `/cloud10/config/aws`
 
 it does include include information about a bucket name and the region the bucket is in.
@@ -124,21 +119,20 @@ therefore lets check bucket `midgard55`:
 ```shell
 aws s3 ls s3://midgard55
 ```
+#### Part III: Retreiving the second iam creds from the helm chat;
 ![midgard55 objects](image-3.png)
 
 as it can be observed from the policy that user `Freya` can list objects and get objects from bucket `midgard55` in addition she can list versions of objects indicating that s3 bucket versioning is enabled for bucket `midgard55` lets start checking these files and what they are:
 
 based on the structure of the objects we can notice that these files are for a `helm chart`
 
-<blockquote >
-  <h3>☸️ Helm chart</h3>
-  <p>
-    What is a Helm chart? Helm charts are a collection of files that describe a Kubernetes cluster's resources and package them together as an application
-  </p>
-</blockquote>
+{{< alert " " >}}
+**Helm chart?** Helm charts are a collection of files that describe a Kubernetes cluster's resources and package them together as an application
+{{< /alert >}}
 
-
-for more info check: [helm](https://helm.sh/)
+for more info check: {{< button href="(https://helm.sh/" target="_self" >}}
+helm.sh
+{{< /button >}}
 
 now since we have a better understanding of what we are dealing with we have two options:
 
@@ -329,7 +323,7 @@ BINGO we found new aws access keys, lets configure them
 ```shell
 aws configure
 ```
-
+#### Part IV: Enumerating the second AWS account;
 lets check the identity of the new user 
 
 ```shell
@@ -363,6 +357,7 @@ If we recall we found a snapshot ID lets try and see if we can list its attribut
 
  ![](image-14.png)
 
+#### Part V: Creating a new EC2 instance based on the snapshot-id;
 first lets understand what we did:
 
 * since we got a snapshot id we should check if its public or not by describing its `createVolumePermission` attribute cause this attribute is responsible if any aws account can create volumes from this snapshot or not and since it does have the value of `all` then you can create any aws account, and search for the snapshot ID, then create an `ebs` volume from this snapshot then create an `ec2` instance and attach the newly created volume from the snapshot to the ec2 instance and see if there is anything we can take advantage of.
@@ -409,6 +404,7 @@ Of particular note, 169.254.169.254 is used in AWS, Azure, GCP and other cloud c
   </p>
 </blockquote>
 
+#### Part VI: Getting the flag;
 
 ```shell
 curl -s http://<ec2-ip-address>/latest/meta-data/iam/security-credentials/ -H 'Host:169.254.169.254'
