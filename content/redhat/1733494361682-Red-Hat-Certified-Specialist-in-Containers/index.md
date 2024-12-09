@@ -2,14 +2,8 @@
 title: "Red Hat Certified Specialist in Containers"
 date: 2024-12-06
 draft: false
-description: "a description"
-tags: ["example", "tag"]
+description: "My certification notes for ex188"
+tags: ["certs", "podman"]
 ---
- an example to get you started
-# This is a heading
-## This is a subheading
-### This is a subsubheading
-#### This is a subsubsubheading
-This is a paragraph with **bold** and *italic* text.
-Check more at [Blowfish documentation](https://blowfish.page/)
-undefined
+
+# Red Hat Certified Specialist in Containers

@@ -1,15 +1,8 @@
 ---
-title: "AWS-CCP"
+title: "AWS Certified Cloud Practitioner"
 date: 2024-12-06
 draft: false
-description: "a description"
-tags: ["example", "tag"]
+description: "My certification exam notes for the AWS CCP exam"
+tags: ["certs", "aws"]
 ---
- an example to get you started
-# This is a heading
-## This is a subheading
-### This is a subsubheading
-#### This is a subsubsubheading
-This is a paragraph with **bold** and *italic* text.
-Check more at [Blowfish documentation](https://blowfish.page/)
-undefined
+# AWS CCP
