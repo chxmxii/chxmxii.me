@@ -48,7 +48,7 @@ enableEmoji = true
 
     [[related.indices]]
         name = "categories"
-        weight = 100
+        weight = 60
 
     [[related.indices]]
         name = "series"
@@ -56,11 +56,11 @@ enableEmoji = true
 
     [[related.indices]]
         name = "authors"
-        weight = 20
+        weight = 0
 
     [[related.indices]]
         name = "date"
-        weight = 10
+        weight = 0
 
     [[related.indices]]
       applyFilter = false
