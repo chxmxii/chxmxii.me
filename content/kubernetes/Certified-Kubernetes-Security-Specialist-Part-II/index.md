@@ -1,210 +1,14 @@
 ---
 title: "Certified Kubernetes Security Specialist PART II"
-date: 2024-12-06
+date: 2024-09-15
 draft: false
 description: "My certification notes for the CKS exam"
 tags: ["certs", "kubernetes", "security"]
 ---
 Continuing from [part I](https://chxmxii.me/kubernetes/Certified-Kubernetes-Security-Specialist-Part-I/index.md). This is **part II** of the CKS exam preparation series, where I will be exploring more topics related to securing Kubernetes clusters.
 
-## Microservices vulnerabilities;
-### Manage Kubernetes Secrets;
-- **Encrypt ETCD at rest;**
-    - The only compoentn allowed to talk to ETCD is kube-api, hence it is responsible for encrypt/decrypt in this flow.
-    - To enable encryption at rest for a specific resource create a new api object with kind `EncryptionConfiguration.`
-    
-    ```bash
-    # generate a key using the followin cmd $( head -c 32 /dev/urandom | base64)
-    apiVersion: apiserver.config.k8s.io/v1
-    kind: EncryptionConfiguration
-    resources:
-      - resources:
-        - secrets
-        providers:
-        - aescbc:
-            keys:
-            - name: key1
-              secret: ffGddeJabcKMocX07jGu1hcL8bdggjH2PSIs24=
-        - identity: {} #this is important to get etcd working with unencrypted secrets
-    ```
-    
-    ```yaml
-    #update the kube-apiserver.yaml manifest to include the provider config:
-    #add the arg
-    spec:
-      containers:
-      - command:
-        - kube-apiserver
-        - --encryption-provider-config=/etc/kubernetes/etcd/encEtcd.yaml
-    #add the volume mount;
-    ...
-      volumeMounts:
-      - mountPath: /etc/kubernetes/etcd
-        name: etcd
-    # add volume;
-      volumes:
-      - hostPath:
-          path: /etc/kubernetes/etcd
-          type: DirectoryOrCreate
-        name: etcd
-    ```
-    
-{{< alert cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee"  >}}
-if you need to troubleshoot you can go through the logs within the /var/log/pods dir.
-{{< /alert >}}    
-
-### Container runtimes sandboxing;
-- Containers are run on a shared kernel, which enables us to execute syscalls (api-like to com w/kernel) that allow us to access other containers.
-- Sandboxes in the security context is an additional layer to ensure isolation.
-- Sandboxes comes at a price (more resc, bad 4 heavy syscalls..).
-
-#### kata containers;
-
-- container runtime sandbox (Hypervisor/VM based).
-
-#### gVisor;
-
-- a userspace kernel for containers from google.
-- Interrupts to limit the syscalls sent by the user (app1↔syscalls↔gvisor↔limited syscalls↔host kernel ↔hw)
-
-```yaml
-apiVersion: node.k8s.io/v1  # RuntimeClass is defined in the node.k8s.io API group
-kind: RuntimeClass 
-metadata:   # RuntimeClass is a non-namespaced resource
-  name: gvisor # The name the RuntimeClass will be referenced by
-handler: runsc # The name of the corresponding CRI configuration
----
-...
-kind: Pod
-#Next time you create a new pod make sure to include the runtimeClassName
-spec: 
-	runtimeClassName: gvisor
-	containers:
-	..
-```
-### OS level domains;
-#### Pod Security Contenxt;
-- controls uid,gi at the pod/container level.
-
-```yaml
-spec:
-    #pod level
-    securityContext:
-    runAsUser: 1000
-    runAsGroup: 3000
-    containers:
-    - command:
-    ...
-    ...
-        #container level
-    securityContext:
-        runAsNonRoot: true
-    dnsPolicy: ClusterFirst
-```
-    
-#### Privileged;
-- maps container user with the host user (root).
-enable w/docker `d run --privileged`
-    
-```yaml
-spec:
-    containers:
-    - command:
-    ...
-    ...
-    securityContext:
-        privileged: true
-```
-        
-#### Privilege Escalation;
-- by default, k8s allows privesc via `allowPrivilegeEscalation`, to disable set to false within the **securityContext** field.
-```yaml
-spec:
-    containers:
-    - command:
-    ...
-    ...
-    securityContext:
-        allowPrivilegeEscalation: false
-```
-
-#### Pod Security Policies;
-
-- Enable via kube-apiserver manifest file `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy.`
-
-```yaml
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-    name: default
-spec:
-    privileged: false  # Don't allow privileged pods!
-    allowPrivilegeEscalation: false # added
-    # The rest fills in some required fields.
-    seLinux:
-    rule: RunAsAny
-    supplementalGroups:
-    rule: RunAsAny
-    runAsUser:
-    rule: RunAsAny
-    fsGroup:
-    rule: RunAsAny
-    volumes:
-    - '*'
-```
-        
-{{< alert cardColor="#757C88" iconColor="#1d3557" textColor="white"  >}}        
-if psp is enabled, then it will be enforced on all resources. but the creator of the resource requires to see this default psp to use it.
-a common approach to solve the problem (when creating a deploy is failed cuz the deploy resource doesn’t have admin perms to read the psp to create the resource) is to give the default sa to the psp.
-`k create role psp-access --verb=use --resource=podsecuritypolicies`
-`k create rolebinding psp-access --role=psp-access --serviceaccount=default:default`
-{{< /alert >}}
-
-### mTLS;
-
-- mutual auth
-- pod2pod encrypted communication
-- both apps have client+server certs to communicate.
-
-#### Service Meshes;
-
-- manage all the certs between pods.
-- decouple our app container from the auth/cert workload.
-- all traffic is routed through a proxy/sidecar.
-
-⇒ These routes are creates via `iptable` rules. the sidecar will needs the NET_ADMIN cap.
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  creationTimestamp: null
-  labels:
-    run: app
-  name: app
-spec:
-  containers:
-  - command:
-    - sh
-    - -c
-    - ping google.com
-    image: bash
-    name: app
-    resources: {}
-  - command:
-    - sh
-    - -c
-    - 'apt-get update && apt-get install -y iptables && iptables -L && sleep 1d'
-    securityContext:
-      capabilities:
-        add: ["NET_ADMIN"] #important for the proxy container
-    image: ubuntu
-    name: proxy
-    resources: {}
-  dnsPolicy: ClusterFirst
-  restartPolicy: Always
-status: {}
-```
+If you haven't read part I, I recommend you do so before continuing with this part.
+{{< article link="https://chxmxii.me/kubernetes/Certified-Kubernetes-Security-Specialist-Part-I/index.md" >}}
 
 ## Supply chain security;
 
@@ -432,3 +236,218 @@ Secure supply chain helps us ensure that the images, libs, and other dependencie
         client-certificate: /etc/kubernetes/admission/apiserver-client-cert.pem     # cert for the webhook admission controller to use
         client-key:  /etc/kubernetes/admission/apiserver-client-key.pem             # key matching the cert
     ```
+
+## Monitoring, Logging & Runtime Security;
+### Immutability of containers at runtime
+
+- Immutability means the container won’t be modified during its lifetime. (u always know the state).
+- Working with immutable containers offers a more reliable/stable workload, easy rollback, and a better security.
+- to enfore the immutability;
+    - remove shells from the image.
+    - set readOnlyRootFilesystem to true.
+    - Make sure to runAsNonRoot.
+- If you don’t have control on the container then;
+    - use **startipProbe** to remove shells on the way up.
+    - use of **securityContext**.
+    
+    ```yaml
+    #e.g. startupProbe
+    spec:
+      containers:
+      - image: nginx
+        name: pod
+        resources: {}
+        startupProbe:
+          exec:
+            command:
+            - rm
+            - /bin/bash
+          initialDelaySeconds: 5
+          periodSeconds: 5
+       
+     #e.g. securityContenxt
+     spec:
+      containers:
+      - image: httpd
+        name: immutable
+        resources: {}
+        securityContext:
+          readOnlyRootFilesystem: true
+          
+        #if u want to write to a dir, then u'hv to create an emptyDir{} vol nd mount it. 
+          
+    ```
+    
+
+### Behavioral Analytics at host and container level
+
+- kube admins should keep an eye on potential malicious activity. this can be done manually by loggin into the cluster nodes and observing host and contianer level process, or by using tools like falco.
+- behavioral analytics is the process of observing the cluster nodes for any activity that seems malicious. an automated process can be helpful with filtering, recording, and alerting events of specific interest. (falco,trace,tetragon)
+- so what is falco?
+    - Cloudnative runtime security tool uses deep kernel tracing to detect bad behavior and automate response to any violations.
+    - Falco arch;
+    - Falco deploys a set of rules (sensor) that maps an event to a data source.
+    - Falco allows enabling more tha one output channel simultaneously.
+
+```yaml
+# /etc/falco/falco_rules.yaml
+#to edit the output of logs go /etc/falco/falco.yaml
+- rule: shell_in_container
+ desc: notice shell activity within a container
+ condition: evt.type = execve and evt.dir=< and container.id != host and proc.name = bash
+ output: shell in a container (user=%user.name container_id=%container.id container_name=%container.name ↵
+ shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline)
+ priority: WARNING
+ 
+ # journalctl -uxef falco
+```
+
+### Auditing
+
+- Why?
+    - What event occurred and by who?
+    - Debugging apps/crds.
+- Audit;
+    - **Policy;** Defines the type of event and the corresponding request data to be recorded.
+    - **Backend;** Responsible for storing the recorded audit events as defined by the audit policy.
+        - Writes events to a file.
+        - Triggeres a webhook which sends the events to an external service via HTTP(S) for a centralized logging and monitoring system.
+    
+    ```yaml
+    apiVersion: audit.k8s.io/v1
+    kind: Policy
+    omitStages: #Prevents generating logs for all requests in this stage.
+     - "RequestReceived"
+    rules:
+     - level: RequestResponse #Logs pod changes at ReqRes levle
+    	 resources:
+    	 - group: ""
+    		 resources: ["pods"]
+     - level: Metadata #Logs Pod events at the metadata level e.g log and status req (user,timestamp, res,verb) but not the req/rep body.
+    	 namespace: ["dev"]
+    	 resources:
+    	 - group: ""
+    		 resources: ["pods/log", "pods/status"]
+    ```
+    
+    - To enable auditing, you will have to;
+    
+    ```yaml
+    spec:
+    	containers:
+    	- command:
+    	  - kube-apiserver
+    	  - --audit-policy-file=/etc/kubernetes/x.yml
+    	  - --audit-log=x.log=/var/log/kubernetes/y.log
+    	  - --audit-log-maxsize=500                                     
+        - --audit-log-maxbackup=5                                     
+    
+      ...
+    	  volumeMounts:
+    	  - mountPath: /etc/kubernetes/x.yml
+    		  name: audit-policy
+    		  readOnly: true
+    	 volumeMounts:
+    	  - mountPath: /var/log/kubernetes/
+    		  name: audit-log
+    		  readOnly: false
+     ...
+     volumes:
+     - name: audit-policy
+    	 hostPath:
+    		 path: /etc/kubernetes/x.yml
+    		 type: File
+     - name: audit-policy
+    	 hostPath:
+    		 path: /var/log/kubernetes
+    		 type: DirectoryOrCreate
+    ```
+    
+
+### Kernel Hardening Tools
+
+- Apps/Process running inside of a container can mae system calls. for e.g. a curl command that performs a http request.
+- curl → libs → seccomp/apparmor → syscall → os kernel → hw.
+- a syscall is a programmatic abstraction running in the userspace for requesting a service from a kernel.
+- **AppArmor;**
+    - An additional security layer between the app invoked in the user space and the uderlying system functionality.
+    - creates various profiles to allow/restrict what an app can do to fs,ps,networks etc..
+        - unconfined → Allow escape
+        - complain → process can escape but log.
+        - enforce → no escape
+    - **cmds;**
+        - `aa-status` → list loaded profiles.
+        - `apparmor_parser -q /path/to/profile` → load an aa profile.
+        - `aa-logprof` → scans log files for apparmor events ot covered by a profile.
+        
+        ```yaml
+        #AppArmor in k8s
+        #before
+        annotations:
+            container.apparmor.security.beta.kubernetes.io/aa-pod: localhost/docker-nginx
+        ...
+        #settings in sc
+        securityContext:
+        	AppArmorProfile:
+        		type: Localhost
+        		localhostProfile: docker-nginx
+        
+        ```
+        
+- **Seccomp;**
+    - stands to secure computing, used to sandbox the privileges of a process.
+    - restricts the calls made from the userspace into the kernel space.
+    - Originally allows 4x calls [”exit()”,”sigreturn()”,”read()”,”write()”].
+    
+    ```yaml
+    ...
+    spec:
+      securityContext:
+        seccompProfile:
+          type: Localhost
+          localhostProfile: default.json
+    ```
+    
+
+### Reduce Attack Surface
+
+What is an attack surface?
+
+- apps should be kept uptodate, unneeded packages should be removed.
+- networks; close ports, keep everything behind a firewamm.
+- iam - restrict user perms. don’t run as root.
+- lot of services = more attack surface
+
+Within kubernetes;
+
+- run k8s components only.
+- keep all the workload ephermal.
+- create from images
+
+So what to do?
+
+- Disable, and stop unecessary services.
+    - systemctl, service. e.g `systemctl list-units -t service --state=running`
+- Close Ports
+    - lsof, netstat, ss
+- Delete packages
+    - apt remove, search.
+
+---
+
+The exam was updated after I took it, so some of the topics might not be relevant anymore. other than that, new topics were added to the exam, such as;
+- **SBOMs;** Software Bill of Materials.
+- **Network Policies;** w/p2p encryption using cillium.
+- **Linting;** using kubeLinter.
+
+I hope this series was helpful to you, and I wish you the best of luck in your CKS exam!
+
+{{< alert icon="-" cardColor="#42445A" textColor="white"  >}}
+**References:**
+- [Kubernetes.io](https://kubernetes.io)
+- [Falco](https://falco.org)
+- [OPA](https://www.openpolicyagent.org)
+- [cillium](https://cilium.io)
+- [kubesec.io](https://kubesec.io)
+- [trivy](https://trivy.dev)
+{{< /alert >}}

@@ -1,6 +1,6 @@
 ---
 title: "Certified Kubernetes Security Specialist PART I"
-date: 2024-12-06
+date: 2024-08-29
 draft: false
 description: "My certification notes for the CKS exam"
 tags: ["certs", "kubernetes", "security", "cks"]
@@ -217,6 +217,206 @@ the `--inescure-port`is set to 0 by defaul, which disables the insecure port. (o
 **NodeRestriction Admission Controller**;
 - A common reason to enable the NodeRestriction admission plugin is to prevent the worker node from labeling the master node. to do that, you have to add the following argument to the kubeapi manifest file. `--enable-admission-plugins=NodeRestriction`.
 
-Next up, we will be looking at microservices vulnerabilities and supply chain security.
 
-{{< button href="https://chxmxii.me/kubernetes/Certified-Kubernetes-Security-Specialist-Part-II/index.md" target="_self" >}} Part II {{< /button >}}
+## Microservices vulnerabilities;
+### Manage Kubernetes Secrets;
+- **Encrypt ETCD at rest;**
+    - The only compoentn allowed to talk to ETCD is kube-api, hence it is responsible for encrypt/decrypt in this flow.
+    - To enable encryption at rest for a specific resource create a new api object with kind `EncryptionConfiguration.`
+    
+    ```bash
+    # generate a key using the followin cmd $( head -c 32 /dev/urandom | base64)
+    apiVersion: apiserver.config.k8s.io/v1
+    kind: EncryptionConfiguration
+    resources:
+      - resources:
+        - secrets
+        providers:
+        - aescbc:
+            keys:
+            - name: key1
+              secret: ffGddeJabcKMocX07jGu1hcL8bdggjH2PSIs24=
+        - identity: {} #this is important to get etcd working with unencrypted secrets
+    ```
+    
+    ```yaml
+    #update the kube-apiserver.yaml manifest to include the provider config:
+    #add the arg
+    spec:
+      containers:
+      - command:
+        - kube-apiserver
+        - --encryption-provider-config=/etc/kubernetes/etcd/encEtcd.yaml
+    #add the volume mount;
+    ...
+      volumeMounts:
+      - mountPath: /etc/kubernetes/etcd
+        name: etcd
+    # add volume;
+      volumes:
+      - hostPath:
+          path: /etc/kubernetes/etcd
+          type: DirectoryOrCreate
+        name: etcd
+    ```
+    
+{{< alert cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee"  >}}
+if you need to troubleshoot you can go through the logs within the /var/log/pods dir.
+{{< /alert >}}    
+
+### Container runtimes sandboxing;
+- Containers are run on a shared kernel, which enables us to execute syscalls (api-like to com w/kernel) that allow us to access other containers.
+- Sandboxes in the security context is an additional layer to ensure isolation.
+- Sandboxes comes at a price (more resc, bad 4 heavy syscalls..).
+
+#### kata containers;
+
+- container runtime sandbox (Hypervisor/VM based).
+
+#### gVisor;
+
+- a userspace kernel for containers from google.
+- Interrupts to limit the syscalls sent by the user (app1↔syscalls↔gvisor↔limited syscalls↔host kernel ↔hw)
+
+```yaml
+apiVersion: node.k8s.io/v1  # RuntimeClass is defined in the node.k8s.io API group
+kind: RuntimeClass 
+metadata:   # RuntimeClass is a non-namespaced resource
+  name: gvisor # The name the RuntimeClass will be referenced by
+handler: runsc # The name of the corresponding CRI configuration
+---
+...
+kind: Pod
+#Next time you create a new pod make sure to include the runtimeClassName
+spec: 
+	runtimeClassName: gvisor
+	containers:
+	..
+```
+### OS level domains;
+#### Pod Security Contenxt;
+- controls uid,gi at the pod/container level.
+
+```yaml
+spec:
+    #pod level
+    securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    containers:
+    - command:
+    ...
+    ...
+        #container level
+    securityContext:
+        runAsNonRoot: true
+    dnsPolicy: ClusterFirst
+```
+    
+#### Privileged;
+- maps container user with the host user (root).
+enable w/docker `d run --privileged`
+    
+```yaml
+spec:
+    containers:
+    - command:
+    ...
+    ...
+    securityContext:
+        privileged: true
+```
+        
+#### Privilege Escalation;
+- by default, k8s allows privesc via `allowPrivilegeEscalation`, to disable set to false within the **securityContext** field.
+```yaml
+spec:
+    containers:
+    - command:
+    ...
+    ...
+    securityContext:
+        allowPrivilegeEscalation: false
+```
+
+#### Pod Security Policies;
+
+- Enable via kube-apiserver manifest file `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy.`
+
+```yaml
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+    name: default
+spec:
+    privileged: false  # Don't allow privileged pods!
+    allowPrivilegeEscalation: false # added
+    # The rest fills in some required fields.
+    seLinux:
+    rule: RunAsAny
+    supplementalGroups:
+    rule: RunAsAny
+    runAsUser:
+    rule: RunAsAny
+    fsGroup:
+    rule: RunAsAny
+    volumes:
+    - '*'
+```
+        
+{{< alert cardColor="#757C88" iconColor="#1d3557" textColor="white"  >}}        
+if psp is enabled, then it will be enforced on all resources. but the creator of the resource requires to see this default psp to use it.
+a common approach to solve the problem (when creating a deploy is failed cuz the deploy resource doesn’t have admin perms to read the psp to create the resource) is to give the default sa to the psp.
+`k create role psp-access --verb=use --resource=podsecuritypolicies`
+`k create rolebinding psp-access --role=psp-access --serviceaccount=default:default`
+{{< /alert >}}
+
+### mTLS;
+
+- mutual auth
+- pod2pod encrypted communication
+- both apps have client+server certs to communicate.
+
+#### Service Meshes;
+
+- manage all the certs between pods.
+- decouple our app container from the auth/cert workload.
+- all traffic is routed through a proxy/sidecar.
+
+⇒ These routes are creates via `iptable` rules. the sidecar will needs the NET_ADMIN cap.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: app
+  name: app
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - ping google.com
+    image: bash
+    name: app
+    resources: {}
+  - command:
+    - sh
+    - -c
+    - 'apt-get update && apt-get install -y iptables && iptables -L && sleep 1d'
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"] #important for the proxy container
+    image: ubuntu
+    name: proxy
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+
+Next up, we will be looking at the **Part II** of the series. tackling more advanced topics.
+
+{{< article link="https://chxmxii.me/kubernetes/Certified-Kubernetes-Security-Specialist-Part-II/index.md" >}}
