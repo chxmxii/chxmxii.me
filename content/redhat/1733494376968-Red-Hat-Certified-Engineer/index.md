@@ -8,4 +8,4 @@ tags: ["certs", "ansible"]
 
 The redhat certified engineer exam is a hands-on exam that tests your knowledge and skills in managing Red Hat Enterprise Linux systems using ansible. I've recently passed the exam and wanted to share my notes. This is a collection of notes I've taken while studying for the exam.
 
-{{ < button href="https://chxmxii.github.io/rhce/main.html" >}}View Notes{{< /button >}}
+{{< button href="https://chxmxii.github.io/rhce/main.html" >}}View Notes{{< /button >}}
