@@ -2,6 +2,11 @@
 clean:
 	@rm -rf public resources
 
+
+.PHONY: get-utils
+get-utils:
+	@npm i -g blowfish-tools
+	
 .PHONY: run
 run:
 	@hugo server -D
