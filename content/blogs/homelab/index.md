@@ -6,5 +6,5 @@ description: "how to create a homelab on top of k8s"
 tags: ["blog", "perso"]
 ---
 
-#### todo
-a blog serie about https://github.com/chxmxii/kubegoros
+#### Overview
+a blog serie about {{< github repo="chxmxii/kubegoros" >}}

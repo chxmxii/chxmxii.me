@@ -124,4 +124,4 @@ transform_file(input_image_path, output_image_path)
 ### Das Ende;
 
 A huge shoutout to everyone who helped make this event a success-Securitnets TEKUP, the participants, and the support from TEKUP University.
-For more insights, detailed write-ups, or to access the challenge files, check out my GitHub repository: {{< github repo="chxmxii/kubegoros" >}}
+For more insights, detailed write-ups, or to access the challenge files, check out my GitHub repository: (hidden)
