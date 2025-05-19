@@ -1,30 +1,46 @@
 ---
-title: "Authenticating AWX with Azure DevOps Personal Access Tokens"
-date: 2024-08-06
+title: "Authenticating AWX with Azure DevOps using Personal Access Tokens"
+date: 2024-10-04
 draft: false
-description: "how to set up Azure DevOps Repo as a SCM for AWX"
-tags: ["blog", "perso"]
+description: "How to set up Azure DevOps as a Git source for AWX"
+tags: ["awx", "ansible", "blog"]
 ---
 
 # Intro
 
-If you’ve ever tried syncing a Git repository from Azure DevOps into AWX, you’ve probably run into some weird issues. You add your token, but AWX still prompts for a password or fails silently with an annoying error message `fatal: Authentication failed`. Here’s how I got around that using a clean and working approach.
+If you’ve ever tried syncing a Git repository from Azure DevOps into AWX, you’ve probably run into some weird issues. And the most annoying is that the sync job keep failing with an error message `fatal: Authentication failed`. Fortunately, And after struggling with this myself, I found a working solution worth sharing.
 
-## What's the problem?
+---
 
-The authentication mechanism for Azure DevOps requires a personal access token (PAT) passed via an Authorization header as mentionned [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Linux). But AWX doesn’t natively support this, and custom credentials don’t help much with this scenario as they can’t influence Git headers directly. so how can we authenticate awx with Azure DevOps PATs?
+The main problem is that AWX doesn’t support the way Microsoft expects you to authenticate. Azure DevOps relies on personal access tokens (PATs) sent in an Authorization header when connecting to Git, as explained [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Linux).
+
+Many people suggest using SSH keys, but in many setups (like mine), SSH access is disabled for security reasons, And building a custom execution environment and injecting a Git config file into the container might work, but it felt like overkill for something that should be straightforward.
+
 
 ## Solution
 
-While digging the internet trying to find a way to authenticate I found this [solution](https://forum.ansible.com/t/using-azure-devops-repo-as-scm-for-awx-project-fails-to-authenticate/6819/3) which suggests using SSH Keys, but many companies (including mine) disables the SSH authentication as a security measure. however I spent many hours trying to find a way to inject the `http.extraHeader` header, The first thing came to mind is creating a custom ExecutionEnvironement and inject `git config --global http.<uri>.extraheader 'Authorization: Basic $PAT_B64_ENC'` inside the container, this could work,
-https://github.com/ansible/awx/blob/devel/awx/playbooks/project_update.yml
+After hours of testing and digging around, I discovered a helpful Git feature that lets you inject configuration dynamically at runtime. This is done using `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_*`, and `GIT_CONFIG_VALUE_*`. (you can read more [here](https://git-scm.com/docs/git-config#Documentation/git-config.txt-GITCONFIGCOUNT))
+
+All you need to do is pass these as environment variables to the job that performs the project sync. It should look like:
+
+```json
 {
   "GIT_CONFIG_COUNT": "1",
   "GIT_CONFIG_KEY_0": "http.extraHeader",
-  "GIT_CONFIG_VALUE_0": "Authorization: Basic $(printf ':$PAT' | base64)",
+  "GIT_CONFIG_VALUE_0": "Authorization: Basic <your-base64-token>",
   "GIT_SSL_NO_VERIFY": "true"
 }
+```
 
-https://stackoverflow.com/questions/74870052/git-config-count-git-config-key-equivalent-features-in-git-versions-2-31
+> To generate the value for `GIT_CONFIG_VALUE_0`:
+> ```
+> printf ":$PAT" | base64
+> ```
 
-TBD
+Note: the username part before the colon is intentionally empty.
+
+---
+
+## Das Ende
+
+This method lets you sync Azure DevOps Git repos in AWX using PATs without needing to modify containers or set up SSH. It worked well for me, and I hope it saves you the hours I spent trying to make this simple thing work.
