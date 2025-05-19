@@ -6,7 +6,7 @@ description: "How to set up Azure DevOps as a Git source for AWX"
 tags: ["awx", "ansible", "blog"]
 ---
 
-# Intro
+## Intro
 
 If you’ve ever tried syncing a Git repository from Azure DevOps into AWX, you’ve probably run into some weird issues. And the most annoying is that the sync job keep failing with an error message `fatal: Authentication failed`. Fortunately, And after struggling with this myself, I found a working solution worth sharing.
 
@@ -32,12 +32,7 @@ All you need to do is pass these as environment variables to the job that perfor
 }
 ```
 
-> To generate the value for `GIT_CONFIG_VALUE_0`:
-> ```
-> printf ":$PAT" | base64
-> ```
-
-Note: the username part before the colon is intentionally empty.
+To generate the value for `GIT_CONFIG_VALUE_0` use `printf ":$PAT" | base64`, please note that the username part before the colon is intentionally empty.
 
 ---
 
