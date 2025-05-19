@@ -6,11 +6,11 @@ description: "Solution for CTCTF 2025"
 tags: ["ctf", "misc"]
 ---
 
-### Intro;
+# Intro
 
 Yesterday, CyberTEK CTF held its second edition at TEK-UP University. The competition, as usual, featured over 40 custom-authored challenges that span different categories, and many participants (+100) praised the high quality of the challenges and the overall experience. However, due to my busy schedule with work and life, I could only author two challenges. The first challenge called Misty (cloud + gw misconfiguration) and the second challenge is F² (authored during the first half of the CTF). As Misty has had zero solves and I plan to keep it for future CTFs, I won't release the writeup for it yet. 
 
-# F² Writeup
+## F² Writeup
 
 In this challenge, we’re given a parameter `f` that is vulnerable to **LFI**.  
 At first glance, reading common files doesn’t reveal anything useful. But there’s a trick... (well, not every LFI gives a flag directly)
@@ -122,9 +122,10 @@ cat flag
 -> securinets{kk12121212121212121212kk}
 ```
 
-for more details check my git repository.
+for more details check my git repository:
+
 {{< github repo="chxmxii/CTF" >}}
 
-Related;
+You can also check the git repo for the other challenges:
 
 {{< github repo="Securinets-TEKUP/CyberTEK-2.0" >}}
