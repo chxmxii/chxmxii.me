@@ -25,4 +25,6 @@ https://github.com/ansible/awx/blob/devel/awx/playbooks/project_update.yml
   "GIT_SSL_NO_VERIFY": "true"
 }
 
+https://stackoverflow.com/questions/74870052/git-config-count-git-config-key-equivalent-features-in-git-versions-2-31
+
 TBD
