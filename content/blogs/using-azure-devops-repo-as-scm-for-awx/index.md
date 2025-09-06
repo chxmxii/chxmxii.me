@@ -1,6 +1,6 @@
 ---
 title: "Authenticating AWX with Azure DevOps using Personal Access Tokens"
-date: 2024-10-04
+date: 2024-12-04
 draft: false
 description: "How to set up Azure DevOps as a Git source for AWX"
 tags: ["awx", "ansible", "blog"]
