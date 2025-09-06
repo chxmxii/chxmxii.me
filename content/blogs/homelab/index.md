@@ -7,4 +7,7 @@ tags: ["blog", "perso"]
 ---
 
 #### Overview
-a blog serie about {{< github repo="chxmxii/kubegoros" >}}
+
+a blog serie about 
+
+{{< github repo="chxmxii/kubegoros" >}}

@@ -6,21 +6,6 @@ description: "how to deploy gitlab ce server on docker"
 tags: ["blog", "perso"]
 ---
 
-## Overview
-
-This post describes how to deploy a GitLab CE server and a GitLab Runner using Docker Compose. The setup includes:
-
-- A GitLab CE container serving the web interface and repository management functions.
-- A GitLab Runner container to execute CI/CD jobs.
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-
-## Deployment
-
-Save the following content as `docker-compose.yml`:
 
 ```yaml
 version: '3.8'
@@ -49,8 +34,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
-Now you can deploy the containers using:
-
 ```bash
 docker compose up -d
 ```
@@ -61,12 +44,6 @@ The GitLab server will be available at:
 `http://localhost:8000`
 
 Use the specified email and password to log in.
-
-## Notes
-
-- GitLab data is saved locally in the `./gitlab` directory.
-- The GitLab Runner uses the Docker socket to run jobs in containers.
-- `network_mode: 'host'` lets the runner reach the GitLab server without extra setup.
 
 ## Registering the Runner
 
