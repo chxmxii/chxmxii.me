@@ -15,7 +15,7 @@ user@monthly-challenge:~$
 ```
 
 Ok! so we are dealing with a Spring Boot Actuator application, but wait, what is even that? The official docs from baeldung states that Actuator brings production-ready features to our application. Monitoring apps, gathering metrics, etc...
-It comes with Predefined Endpoints, you can find more inforamtion ![here](https://www.baeldung.com/spring-boot-actuators).
+It comes with Predefined Endpoints, you can find more inforamtion 👉 [here](https://www.baeldung.com/spring-boot-actuators).
 
 The most interesting Endpoint is `/actuator/env`, CURLing it returnes some valuable data! such as the S3 bucket name! and some other info about the ec2 instance ;)
 
